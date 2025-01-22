@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repository Scanner</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <h1 class="page-title">Repository Scanner</h1>
+
+    <div class="container">
+        <div class="tab-buttons">
+            <div class="tab-button active" onclick="openTab('link')">Scan by Link</div>
+            <div class="tab-button" onclick="openTab('file')">Scan by File Upload</div>
+        </div>
+
+        <div id="link" class="tab active">
+            <form action="/scan" method="post">
+                <label for="repo_url" class="form-label">Enter GitHub Repository URL:</label>
+                <input type="text" id="repo_url" name="repo_url" class="form-input" placeholder="https://github.com/username/repository" required>
+                <input type="submit" class="form-submit" value="Start Scan">
+            </form>
+        </div>
+
+        <div id="file" class="tab">
+            <form action="/scan" method="post" enctype="multipart/form-data">
+                <label for="repo_file" class="form-label">Upload .zip File:</label>
+                <input type="file" id="repo_file" name="uploaded_file" class="form-input" required>
+                <input type="submit" class="form-submit" value="Upload and Scan">
+            </form>
+        </div>
+
+        <p id="message">
+            {% if message %}
+                <span>{{ message }}</span>
+            {% endif %}
+        </p>
+    </div>
+
+    <script>
+        function openTab(tabName) {
+            const tabs = document.querySelectorAll('.tab');
+            const buttons = document.querySelectorAll('.tab-button');
+
+            tabs.forEach(tab => tab.classList.remove('active'));
+            buttons.forEach(button => button.classList.remove('active'));
+
+            document.getElementById(tabName).classList.add('active');
+            document.querySelector(`.tab-button[onclick="openTab('${tabName}')"]`).classList.add('active');
+        }
+    </script>
+</body>
+</html>
