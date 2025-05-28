@@ -82,7 +82,7 @@ cp .env.example .env
 1. Start OWASP ZAP (required for DAST scanning):
 ```bash
 # Start ZAP in daemon mode
-zaproxy -daemon
+/usr/share/zaproxy/zap.sh -daemon -host 127.0.0.1 -port 8080 -config api.key=your-key
 ```
 
 2. Start the application:
