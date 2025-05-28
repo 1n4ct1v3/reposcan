@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+jinja2
+python-multipart
+reportlab
+GitPython
+requests
+sqlalchemy
+PyJWT>=2.0.0
+python-jose[cryptography]
+passlib[bcrypt]
+bcrypt==4.0.1
+python-dotenv

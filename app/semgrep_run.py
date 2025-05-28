@@ -2,13 +2,11 @@ import subprocess
 from pathlib import Path
 import json
 
-REPORT_DIR = Path("app") / "repositories"
-
-
 def run_semgrep(repo_path: Path) -> str:
     try:
         command = [
             "semgrep", "--config", "auto", "--json",
+            "--exclude", "gitleaks-report.json",
             "--output", str(repo_path / "semgrep-report.json"),
             str(repo_path)
         ]
@@ -21,7 +19,6 @@ def run_semgrep(repo_path: Path) -> str:
 
     except Exception as e:
         raise Exception(f"Error running Semgrep: {e}")
-
 
 def process_semgrep_report(report_path: str) -> str:
     try:

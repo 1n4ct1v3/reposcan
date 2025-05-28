@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Security Scanner</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/static/favicon/android-chrome-512x512.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/static/favicon/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon/favicon-16x16.png">
+    <link rel="icon" type="image/x-icon" href="/static/favicon/favicon.ico">
+    <link rel="manifest" href="/static/favicon/site.webmanifest">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f9;
+            font-family: 'Poppins', sans-serif;
+            padding: 1rem;
+        }
+
+        .register-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            margin: 1rem;
+        }
+
+        .register-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .register-header h1 {
+            color: #333;
+            margin: 0;
+            font-size: clamp(1.5rem, 4vw, 1.8rem);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #666;
+            font-size: clamp(0.9rem, 3vw, 1rem);
+        }
+
+        .login-message {
+            margin-top: 0.8rem;
+            color: #666;
+            font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: clamp(0.9rem, 3vw, 1rem);
+            box-sizing: border-box;
+        }
+
+        .register-button {
+            width: 100%;
+            padding: 1rem;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: clamp(0.9rem, 3vw, 1rem);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .register-button:hover {
+            background: #0056b3;
+        }
+
+        .error-message {
+            color: #dc3545;
+            text-align: center;
+            margin-top: 1rem;
+            font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+        }
+
+        /* Media Queries */
+        @media (max-width: 480px) {
+            .register-container {
+                padding: 1.5rem;
+                margin: 0.5rem;
+            }
+
+            .register-header {
+                margin-bottom: 1.5rem;
+            }
+
+            .form-group {
+                margin-bottom: 0.8rem;
+            }
+
+            .form-group input {
+                padding: 0.7rem;
+            }
+
+            .register-button {
+                padding: 0.8rem;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .register-container {
+                padding: 1rem;
+                margin: 0.25rem;
+            }
+
+            .register-header {
+                margin-bottom: 1rem;
+            }
+
+            .form-group {
+                margin-bottom: 0.6rem;
+            }
+
+            .form-group input {
+                padding: 0.6rem;
+            }
+
+            .register-button {
+                padding: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <div class="register-header">
+            <h1>Security Scanner</h1>
+        </div>
+        
+        <form id="register-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <button type="submit" class="register-button">Register</button>
+            
+            <div id="error-message" class="error-message" style="display: none;"></div>
+        </form>
+        <div class="text-center mt-3">
+            <p class="login-message">Already have an account? <a href="/login" class="login-message">Login here</a></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData();
+            formData.append('username', document.getElementById('username').value);
+            formData.append('email', document.getElementById('email').value);
+            formData.append('password', document.getElementById('password').value);
+            
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.detail || 'Registration failed');
+                }
+                
+                // Redirect to login page on success
+                window.location.href = '/login';
+            } catch (error) {
+                const errorDiv = document.getElementById('error-message');
+                errorDiv.textContent = error.message;
+                errorDiv.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html> 

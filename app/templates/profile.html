@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - RepoScan{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <h1>Profile</h1>
+    <div class="profile-info">
+        <div class="info-group">
+            <label>Username</label>
+            <div class="info-value">{{ user.username }}</div>
+        </div>
+        <div class="info-group">
+            <label>Email</label>
+            <div class="info-value">{{ user.email }}</div>
+        </div>
+    </div>
+</div>
+
+<style>
+.profile-container {
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+}c
+
+.profile-container h1 {
+    margin-bottom: 2rem;
+    color: #333;
+    font-size: 1.8rem;
+}
+
+.profile-info {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.info-group {
+    margin-bottom: 1.5rem;
+}
+
+.info-group:last-child {
+    margin-bottom: 0;
+}
+
+.info-group label {
+    display: block;
+    color: #666;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.info-value {
+    color: #333;
+    font-size: 1.1rem;
+    padding: 0.5rem 0;
+}
+</style>
+{% endblock %} 

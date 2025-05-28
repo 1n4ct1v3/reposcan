@@ -1,0 +1,17 @@
+{
+    "Generic Secret detected": "Avoid committing hard-coded secrets to source code. Use environment variables or a secure secrets manager like HashiCorp Vault or AWS Secrets Manager. Rotate the leaked secret immediately.",
+    "Generic API Key detected": "Remove the API key from the codebase and rotate it immediately. Use environment variables or secret management tools to keep it secure.",
+    "JWT token detected": "Do not hardcode JWT tokens in your codebase. Store them securely using environment variables or secure storage, and rotate any exposed tokens.",
+    "User controlled data in methods like innerHTML, outerHTML or document.write is an anti-pattern that can lead to XSS vulnerabilities": "Avoid using `innerHTML`, `outerHTML`, or `document.write` with user-controlled input. Sanitize inputs using a trusted library or use safer alternatives like `textContent`.",
+    "Detected use of parseXml() function with the noent field set to true. This can lead to an XML External Entities (XXE) attack if untrusted data is passed into it.": "Disable the `noent` option when parsing XML unless strictly necessary. Use secure XML parsers and validate all inputs to prevent XXE vulnerabilities.",
+    "AWS Secret Access Key detected": "Remove the hard-coded AWS secret key from the codebase. Revoke the exposed key immediately and use environment variables or IAM roles to manage credentials securely.",
+    "Amazon MWS Auth Token detected": "Revoke the leaked Amazon MWS Auth Token and generate a new one. Use environment variables or a secure secrets manager to avoid hard-coding credentials.",
+    "Slack Webhook detected": "Revoke the exposed Slack webhook URL immediately. Store webhook URLs in environment variables or secret managers instead of source code.",
+    "Stripe API Key detected": "Remove the hard-coded Stripe API key and rotate it. Store keys securely using environment variables or a secret manager.",
+    "Stripe Restricted API Key detected": "Revoke and regenerate the restricted Stripe API key. Never store API keys in code. Use secure storage solutions.",
+    "Facebook Access Token detected": "Revoke the leaked Facebook access token immediately and generate a new one. Use environment variables or secure vaults for storage.",
+    "PayPal Braintree Access Token detected": "Revoke the exposed Braintree access token and regenerate it. Store credentials securely and avoid hardcoding.",
+    "Mailgun API Key detected": "Remove and rotate the Mailgun API key. Store credentials in environment variables or secure secret management systems.",
+    "Twilio API Key detected": "Delete and regenerate the Twilio API key. Avoid committing secrets to version control and use secure configuration practices."
+  }
+  

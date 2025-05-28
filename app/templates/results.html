@@ -11,8 +11,7 @@
     {% if success %}
         <p>Scan complete! You can download your reports:</p>
         <ul>
-            <li><a href="{{ gitleaks_download_link }}" target="_blank">Download Gitleaks Report</a></li>
-            <li><a href="{{ semgrep_download_link }}" target="_blank">Download Semgrep Report</a></li>
+            <li><a href="{{ download_link }}" download>Download Scan Report</a></li>
         </ul>
     {% else %}
         <p>An error occurred: {{ error_message }}</p>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Security Scanner</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="/static/favicon/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/static/favicon/android-chrome-512x512.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/static/favicon/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/static/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/static/favicon/favicon-16x16.png">
+    <link rel="icon" type="image/x-icon" href="/static/favicon/favicon.ico">
+    <link rel="manifest" href="/static/favicon/site.webmanifest">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f4f4f9;
+            font-family: 'Poppins', sans-serif;
+            padding: 1rem;
+        }
+
+        .login-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+            margin: 1rem;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .login-header h1 {
+            color: #333;
+            margin: 0;
+            font-size: clamp(1.5rem, 4vw, 1.8rem);
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #666;
+            font-size: clamp(0.9rem, 3vw, 1rem);
+        }
+
+        .register-message {
+            margin-top: 0.8rem;
+            color: #666;
+            font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: clamp(0.9rem, 3vw, 1rem);
+            box-sizing: border-box;
+        }
+
+        .login-button {
+            width: 100%;
+            padding: 1rem;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: clamp(0.9rem, 3vw, 1rem);
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .login-button:hover {
+            background: #0056b3;
+        }
+
+        .error-message {
+            color: #dc3545;
+            text-align: center;
+            margin-top: 1rem;
+            font-size: clamp(0.8rem, 2.5vw, 0.9rem);
+        }
+
+        /* Media Queries */
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 1.5rem;
+                margin: 0.5rem;
+            }
+
+            .login-header {
+                margin-bottom: 1.5rem;
+            }
+
+            .form-group {
+                margin-bottom: 0.8rem;
+            }
+
+            .form-group input {
+                padding: 0.7rem;
+            }
+
+            .login-button {
+                padding: 0.8rem;
+            }
+        }
+
+        @media (max-width: 320px) {
+            .login-container {
+                padding: 1rem;
+                margin: 0.25rem;
+            }
+
+            .login-header {
+                margin-bottom: 1rem;
+            }
+
+            .form-group {
+                margin-bottom: 0.6rem;
+            }
+
+            .form-group input {
+                padding: 0.6rem;
+            }
+
+            .login-button {
+                padding: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <h1>Security Scanner</h1>
+        </div>
+        
+        <form id="login-form">
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            
+            <button type="submit" class="login-button">Login</button>
+            
+            <div id="error-message" class="error-message" style="display: none;"></div>
+        </form>
+        <div class="text-center mt-3">
+            <p class="register-message">Don't have an account? <a href="/register" class="register-message">Register here</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Function to handle authenticated fetch requests
+        async function authenticatedFetch(url, token) {
+            try {
+                const response = await fetch(url);
+                
+                if (response.ok) {
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('text/html')) {
+                        const html = await response.text();
+                        document.open();
+                        document.write(html);
+                        document.close();
+                        // Update URL without triggering a page load
+                        window.history.pushState({}, '', url);
+                    }
+                } else {
+                    throw new Error('Failed to load page');
+                }
+            } catch (error) {
+                console.error('Navigation error:', error);
+                window.location.href = '/login';
+            }
+        }
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new URLSearchParams();
+            formData.append('username', document.getElementById('username').value);
+            formData.append('password', document.getElementById('password').value);
+            
+            try {
+                const response = await fetch('/token', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.detail || 'Login failed');
+                }
+                
+                if (data.access_token) {
+                    localStorage.setItem('access_token', data.access_token);
+                    // Redirect to dashboard - the cookie is already set by the server
+                    window.location.href = '/';
+                } else {
+                    throw new Error('No access token received');
+                }
+            } catch (error) {
+                const errorDiv = document.getElementById('error-message');
+                errorDiv.textContent = error.message;
+                errorDiv.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html> 

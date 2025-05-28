@@ -1,0 +1,550 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="dashboard-container">
+    <!-- Overview Section -->
+    <div class="dashboard-section">
+        <h2>Security Scan Overview</h2>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-scan-icon lucide-scan"><path d="M3 7V5a2 2 0 0 1 2-2h2"/><path d="M17 3h2a2 2 0 0 1 2 2v2"/><path d="M21 17v2a2 2 0 0 1-2 2h-2"/><path d="M7 21H5a2 2 0 0 1-2-2v-2"/></svg>
+                </div>
+                <div class="stat-title">Active Scans</div>
+                <div id="active-scans-count">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-square-check-icon lucide-square-check"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="m9 12 2 2 4-4"/></svg>
+                </div>
+                <div class="stat-title">Completed Scans</div>
+                <div id="completed-scans-count">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-triangle-alert-icon lucide-triangle-alert"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                </div>
+                <div class="stat-title">Failed Scans</div>
+                <div id="failed-scans-count">0</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Active Scans Section -->
+    <div class="dashboard-section">
+        <h2>Active DAST Scans</h2>
+        <div id="active-dast-scans" class="scans-container">
+            <div class="no-scans-message">No active DAST scans</div>
+        </div>
+    </div>
+
+    <!-- Active SAST Scans Section -->
+    <div class="dashboard-section">
+        <h2>Active SAST Scans</h2>
+        <div id="active-sast-scans" class="scans-container">
+            <div class="no-scans-message">No active SAST scans</div>
+        </div>
+    </div>
+
+    <!-- Recent Reports Section -->
+    <div class="dashboard-section">
+        <h2>Recent Reports</h2>
+        <div id="recent-reports-container" class="reports-container">
+            <div class="no-scans-message">No reports available</div>
+        </div>
+    </div>
+</div>
+
+<style>
+.dashboard-container {
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.dashboard-section {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.dashboard-section h2 {
+    margin-top: 0;
+    color: #333;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+}
+
+.stat-icon {
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+.stat-title {
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.scans-container, .reports-container {
+    display: grid;
+    gap: 15px;
+}
+
+.scan-card, .report-card {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    display: grid;
+    gap: 10px;
+}
+
+.progress-container {
+    margin: 10px 0;
+}
+
+.progress-bar {
+    background: #e9ecef;
+    height: 8px;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    background: #4CAF50;
+    height: 100%;
+    width: 0%;
+    transition: width 0.5s ease-in-out;
+}
+
+.no-scans-message {
+    text-align: center;
+    color: #666;
+    padding: 20px;
+}
+
+.report-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.report-info {
+    flex-grow: 1;
+}
+
+.view-report-btn {
+    background: #007bff;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: background-color 0.2s;
+}
+
+.view-report-btn:hover {
+    background: #0056b3;
+}
+
+.scan-type-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    font-weight: bold;
+    margin-left: 10px;
+    background: #007bff;
+    color: white;
+}
+
+.stages-container {
+    margin-top: 10px;
+}
+
+.stage {
+    margin-bottom: 15px;
+}
+
+.stage-status {
+    font-size: 0.9em;
+    color: #666;
+    margin-top: 2px;
+}
+
+/* Add jQuery-like contains selector support */
+.stage:contains('gitleaks:') .progress-fill { background: #4CAF50; }
+.stage:contains('semgrep:') .progress-fill { background: #2196F3; }
+.stage:contains('bearer:') .progress-fill { background: #FF9800; }
+.stage:contains('report:') .progress-fill { background: #9C27B0; }
+
+.sast-scan-card {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.sast-stages {
+    margin-top: 15px;
+}
+
+.sast-stage {
+    margin-bottom: 12px;
+}
+
+.stage-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.stage-name {
+    font-weight: 500;
+}
+
+.stage-status {
+    font-size: 0.9em;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+.stage-status.pending { background: #e9ecef; }
+.stage-status.running { background: #cce5ff; }
+.stage-status.completed { background: #d4edda; }
+.stage-status.failed { background: #f8d7da; }
+
+.scan-source {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.scan-source-url {
+    margin-left: 10px;
+    word-break: break-all;
+}
+
+.scan-type {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-weight: 500;
+    margin-left: 10px;
+}
+
+.scan-type.sast {
+    background: #e3f2fd;
+    color: #0d47a1;
+}
+
+.scan-type.dast {
+    background: #f3e5f5;
+    color: #4a148c;
+}
+
+.scan-completion-status {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 10px 20px;
+    border-radius: 4px;
+    color: white;
+    font-weight: bold;
+    animation: fadeIn 0.3s ease-in;
+}
+
+.scan-completion-status.completed {
+    background-color: #28a745;
+}
+
+.scan-completion-status.failed {
+    background-color: #dc3545;
+}
+
+.report-card {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    animation: slideIn 0.3s ease-out;
+}
+
+.report-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.report-type {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.report-type.sast {
+    background: #e3f2fd;
+    color: #0d47a1;
+}
+
+.report-type.dast {
+    background: #f3e5f5;
+    color: #4a148c;
+}
+
+.report-date {
+    color: #666;
+    font-size: 0.9em;
+}
+
+.report-target {
+    word-break: break-all;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.scan-error {
+    color: #dc3545;
+    margin-top: 10px;
+    padding: 8px;
+    background-color: #f8d7da;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+</style>
+
+<script>
+let activeScans = new Map();
+
+function updateScanCard(scanId, data) {
+    const scanCard = document.getElementById(`scan-${scanId}`);
+    const containerId = data.scan_type === 'SAST' ? 'active-sast-scans' : 'active-dast-scans';
+    
+    if (!scanCard) {
+        // Create new scan card
+        const card = document.createElement('div');
+        card.id = `scan-${scanId}`;
+        card.className = data.scan_type === 'SAST' ? 'sast-scan-card' : 'scan-card';
+
+        // Create card content based on scan type
+        if (data.scan_type === 'SAST') {
+            // SAST scan card
+            card.innerHTML = `
+                <div class="scan-source">
+                    <strong>Source:</strong>
+                    <span class="scan-source-url">${data.repo_url || data.source_info || 'N/A'}</span>
+                    <span class="scan-type sast">SAST</span>
+                </div>
+                <div class="progress-container">
+                    <div>Code Analysis Progress:</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${data.scan_progress || 0}%"></div>
+                    </div>
+                </div>
+                <div class="scan-status">${data.status}</div>
+                ${data.error ? `<div class="scan-error">${data.error}</div>` : ''}
+            `;
+        } else {
+            // DAST scan card
+            card.innerHTML = `
+                <div class="scan-source">
+                    <strong>Target:</strong>
+                    <span class="scan-source-url">${data.target_url || 'N/A'}</span>
+                    <span class="scan-type dast">DAST</span>
+                </div>
+                <div class="progress-container">
+                    <div>Spider Progress:</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${data.spider_progress}%"></div>
+                    </div>
+                </div>
+                <div class="progress-container">
+                    <div>Active Scan Progress:</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: ${data.scan_progress}%"></div>
+                    </div>
+                </div>
+                <div class="scan-status">${data.status}</div>
+                ${data.error ? `<div class="scan-error">${data.error}</div>` : ''}
+            `;
+        }
+
+        const container = document.getElementById(containerId);
+        const noScansMessage = container.querySelector('.no-scans-message');
+        if (noScansMessage) {
+            container.removeChild(noScansMessage);
+        }
+        container.appendChild(card);
+    } else {
+        // Update existing scan card
+        if (data.scan_type === 'SAST') {
+            // Update SAST progress
+            scanCard.querySelector('.progress-fill').style.width = `${data.scan_progress || 0}%`;
+            scanCard.querySelector('.scan-status').textContent = data.status;
+            if (data.error) {
+                const errorDiv = scanCard.querySelector('.scan-error') || document.createElement('div');
+                errorDiv.className = 'scan-error';
+                errorDiv.textContent = data.error;
+                if (!scanCard.querySelector('.scan-error')) {
+                    scanCard.appendChild(errorDiv);
+                }
+            }
+        } else {
+            // Update DAST progress
+            scanCard.querySelectorAll('.progress-fill')[0].style.width = `${data.spider_progress}%`;
+            scanCard.querySelectorAll('.progress-fill')[1].style.width = `${data.scan_progress}%`;
+            scanCard.querySelector('.scan-status').textContent = data.status;
+            if (data.error) {
+                const errorDiv = scanCard.querySelector('.scan-error') || document.createElement('div');
+                errorDiv.className = 'scan-error';
+                errorDiv.textContent = data.error;
+                if (!scanCard.querySelector('.scan-error')) {
+                    scanCard.appendChild(errorDiv);
+                }
+            }
+        }
+    }
+
+    if (data.status === 'completed' || data.status === 'failed') {
+        // Show completion status
+        const statusEl = document.createElement('div');
+        statusEl.className = `scan-completion-status ${data.status}`;
+        statusEl.textContent = `Scan ${data.status}!`;
+        scanCard.appendChild(statusEl);
+
+        // Update recent reports immediately
+        updateRecentReports();
+
+        // Remove the card after a delay
+        setTimeout(() => {
+            scanCard.remove();
+            const container = document.getElementById(containerId);
+            if (container.children.length === 0) {
+                container.innerHTML = `<div class="no-scans-message">No active ${data.scan_type.toUpperCase()} scans</div>`;
+            }
+        }, 3000);
+    }
+}
+
+function updateStats() {
+    let active = 0;
+    let completed = 0;
+    let failed = 0;
+
+    activeScans.forEach(scan => {
+        if (scan.status === 'running') active++;
+        else if (scan.status === 'completed') completed++;
+        else if (scan.status === 'failed') failed++;
+    });
+
+    document.getElementById('active-scans-count').textContent = active;
+    document.getElementById('completed-scans-count').textContent = completed;
+    document.getElementById('failed-scans-count').textContent = failed;
+}
+
+function updateRecentReports() {
+    fetch('/recent_reports')
+        .then(response => response.json())
+        .then(reports => {
+            const container = document.getElementById('recent-reports-container');
+            if (reports.length === 0) {
+                container.innerHTML = '<div class="no-scans-message">No reports available</div>';
+                return;
+            }
+
+            container.innerHTML = reports.map(report => {
+                const isSAST = !report.target_url;
+                return `
+                    <div class="report-card">
+                        <div class="report-info">
+                            <div class="report-header">
+                                <span class="report-type ${isSAST ? 'sast' : 'dast'}">${isSAST ? 'SAST' : 'DAST'}</span>
+                                <span class="report-date">${new Date(report.completion_time).toLocaleString()}</span>
+                            </div>
+                            <div class="report-target">
+                                <strong>${isSAST ? 'Source' : 'Target'}:</strong> ${isSAST ? report.source_info : report.target_url}
+                            </div>
+                        </div>
+                        <a href="${report.report_url}" target="_blank" class="view-report-btn">View Report</a>
+                    </div>
+                `;
+            }).join('');
+        });
+}
+
+// Poll for updates more frequently during active scans
+let activePollInterval = 2000; // 2 seconds
+let inactivePollInterval = 5000; // 5 seconds
+let currentPollInterval = activePollInterval;
+
+function pollActiveScans() {
+    fetch('/active_scans')
+        .then(response => response.json())
+        .then(scans => {
+            let hasActiveScans = false;
+            scans.forEach(scan => {
+                hasActiveScans = true;
+                activeScans.set(scan.id, scan);
+                updateScanCard(scan.id, scan);
+            });
+            
+            // Adjust polling frequency based on active scans
+            if (hasActiveScans && currentPollInterval !== activePollInterval) {
+                currentPollInterval = activePollInterval;
+                clearInterval(pollInterval);
+                pollInterval = setInterval(pollActiveScans, currentPollInterval);
+            } else if (!hasActiveScans && currentPollInterval !== inactivePollInterval) {
+                currentPollInterval = inactivePollInterval;
+                clearInterval(pollInterval);
+                pollInterval = setInterval(pollActiveScans, currentPollInterval);
+            }
+            
+            updateStats();
+        });
+}
+
+// Initial setup
+let pollInterval = setInterval(pollActiveScans, currentPollInterval);
+pollActiveScans();
+updateRecentReports();
+</script>
+{% endblock %}

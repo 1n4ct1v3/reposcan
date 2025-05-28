@@ -1,26 +1,24 @@
-import os
-import subprocess
 import shutil
+import subprocess
 from git import Repo
 from pathlib import Path
 
-REPO_DIR = Path("app") / "repositories"
-
-def clone_repo(repo_url: str, repo_name: str):
+def clone_repo(repo_url: str, destination: Path) -> Path:
     try:
-        repo_path = REPO_DIR / repo_name
-        if repo_path.exists():
-            shutil.rmtree(repo_path)
-        Repo.clone_from(repo_url, repo_path)
-        return repo_path
+        if destination.exists():
+            shutil.rmtree(destination)
+        Repo.clone_from(repo_url, destination)
+        return destination
     except Exception as e:
         raise Exception(f"Error cloning repository: {e}")
 
 def run_gitleaks(repo_path: Path) -> str:
     try:
-        command = ["gitleaks", "detect", "--source", str(repo_path),
-                   "--report-path", str(repo_path / "gitleaks-report.json"),
-                   "--report-format", "json"]
+        command = [
+            "gitleaks", "detect", "--source", str(repo_path),
+            "--report-path", str(repo_path / "gitleaks-report.json"),
+            "--report-format", "json"
+        ]
 
         result = subprocess.run(command, capture_output=True, text=True)
         if result.returncode not in [0, 1]:
@@ -33,7 +31,9 @@ def run_gitleaks(repo_path: Path) -> str:
 def run_gitleaks_on_extracted(extract_path: Path) -> str:
     return run_gitleaks(extract_path)
 
-def process_repository(repo_url: str):
-    repo_name = repo_url.strip().split("/")[-1]
-    repo_path = clone_repo(repo_url, repo_name)
-    return run_gitleaks(repo_path)
+def process_repository(repo_url: str = None, *, destination: Path, from_zip: bool = False) -> str:
+    if not from_zip:
+        if not repo_url:
+            raise Exception("Repository URL is required when not processing a zip file.")
+        clone_repo(repo_url, destination)
+    return run_gitleaks(destination)

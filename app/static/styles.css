@@ -1,15 +1,100 @@
+/* Google Fonts - Poppins */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
 body {
-    font-family: 'Roboto', Arial, sans-serif;
     background-color: #f4f4f9;
     color: #333;
-    margin: 0;
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Mobile menu button */
+.menu-toggle {
+    display: none;
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1000;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+}
+
+.menu-toggle svg {
+    width: 24px;
+    height: 24px;
+    color: #333;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 260px;
+    background-color: #fff;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    padding-top: 20px;
+    transition: transform 0.3s ease;
+    z-index: 999;
+}
+
+.sidebar-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 16px;
+}
+
+.lists {
+    list-style: none;
     padding: 0;
+}
+
+.list {
+    margin: 10px 0;
+}
+
+.nav-link {
+    display: flex;
+    align-items: center;
+    padding: 14px 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #707070;
+    transition: 0.3s;
+}
+
+.nav-link:hover, .nav-link.active {
+    background-color: #007bff;
+    color: #fff;
+}
+
+.icon {
+    margin-right: 14px;
+    font-size: 20px;
+    color: inherit;
+}
+
+.main-content {
+    margin-left: 260px;
+    width: calc(100% - 260px);
+    padding: 20px;
+    transition: margin-left 0.3s ease, width 0.3s ease;
 }
 
 .page-title {
     text-align: center;
     margin-top: 20px;
-    font-size: 2.5em;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
     color: #444;
 }
 
@@ -79,5 +164,67 @@ body {
 }
 
 .tab.active {
+    display: block;
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .menu-toggle {
+        display: block;
+    }
+
+    .sidebar {
+        transform: translateX(-100%);
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .container {
+        max-width: 95%;
+        margin: 20px auto;
+        padding: 15px;
+    }
+
+    .page-title {
+        margin-top: 60px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        max-width: 100%;
+        margin: 10px auto;
+        padding: 10px;
+    }
+
+    .tab-buttons {
+        flex-direction: column;
+    }
+
+    .tab-button {
+        width: 100%;
+    }
+}
+
+/* Overlay for mobile menu */
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 998;
+}
+
+.sidebar-overlay.active {
     display: block;
 }
